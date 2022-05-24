@@ -121,6 +121,9 @@ class AgenteBFS:
             if(grid_cells[row][col+1].id ==1):
                 self.teste_de_objetivo(row,col+1)
                 # self.expandir_no()
+    
+    # def visitar_no():
+
 
 
     def teste_de_objetivo(self, row, col):
