@@ -86,8 +86,13 @@ def displayMaze(grid: list):
 
 # Request the user to input a maze size and initialise the maze, stack and initial Cell
 size = int(input('Enter a maze size: '))
-grid = [[Cell(x, y) for x in range(size)] for y in range(size)]
-current = grid[0][0]
+grid = []
+for x in range(size):
+    for y in range(size):
+        grid.append(Cell(x,y))
+#grid = [[Cell(x, y) for x in range(size)] for y in range(size)]
+print(type(grid))
+#current = grid[0][0]
 stack = []
 
 
