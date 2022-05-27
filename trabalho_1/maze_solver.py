@@ -400,4 +400,4 @@ while not done:
         agente.expandir_no()
     
     pygame.display.flip()  
-    clock.tick(5)
+    clock.tick(10)
