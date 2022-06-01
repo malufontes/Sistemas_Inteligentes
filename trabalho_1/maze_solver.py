@@ -31,8 +31,8 @@ matrix.append(row10)
 nrows = len(matrix)
 ncolumns = len(matrix[0])
 
-print("numero de linhas =",nrows)
-print("numero de colunas =",ncolumns)
+# print("numero de linhas =",nrows)
+# print("numero de colunas =",ncolumns)
 # print(matrix[0][0])
 
 TILE = 50
@@ -44,7 +44,7 @@ for row in range(0,nrows):
             inicial_row = row
             inicial_col = col
 
-print(inicial_row,inicial_col)
+# print(inicial_row,inicial_col)
 
 class Cell:
     def __init__(self,row,col,id):
