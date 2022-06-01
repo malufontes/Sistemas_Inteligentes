@@ -1,7 +1,7 @@
 from ctypes.wintypes import BOOL
 
 import random
-from socket import AF_UNIX
+1
 
 
 row1 = [2,0,0,0,0,0,0,0,0,0]
@@ -311,7 +311,7 @@ class AgenteDFS:
     def teste_direita(self, voltapermitida = False):
         print("Volta permitida direita", voltapermitida)     
         if(self.row<(nrows-1) and not self.sucess): ## se a linha nao for maior que o o numero maximo menos 1 pra nao acessar area inexistente da matriz 
-                if(grid_cells[self.row+1][self.col].id ==1):
+                if(grid_cells[self.row+1][self.col].id >0):
                     if(voltapermitida or self.row+1 != self.last_row ): ## se a volta for permitida ou se nao estiver voltando
                         print("DIREITA")
                         print("linha", self.row, "colula :", self.col , "row + 1:", self.row+1 ,  "self last row ", self.last_row)
@@ -323,7 +323,7 @@ class AgenteDFS:
 
     def teste_baixo(self,voltapermitida = False):
         if(self.col<(nrows-1) and not self.sucess): ## coluna menor que o num maximo menos 1 numero de rows eh igual ao numero de cols
-            if(grid_cells[self.row][self.col+1].id ==1):
+            if(grid_cells[self.row][self.col+1].id >0):
                 if(voltapermitida or self.col+1 != self.last_col):
                     print("BAIXO")
                     print("linha", self.row, "colula :", self.col ,"col + 1:", self.col+1 , "self last col ", self.last_col)
@@ -334,7 +334,7 @@ class AgenteDFS:
                 
     def teste_esquerda(self, voltapermitida = False):
         if(self.row > 0 and not self.sucess): ## se a linha nao for menor que zero ou seja se nao tenar acessar algo que nao existe
-            if(grid_cells[self.row-1][self.col].id ==1):
+            if(grid_cells[self.row-1][self.col].id >0):
                 if(voltapermitida or self.row-1 != self.last_row):
                     print("ESQUERDA")
                     print("linha", self.row, "colula :", self.col ,"row - 1:", self.row-1 , "self last row ", self.last_row)
@@ -345,7 +345,7 @@ class AgenteDFS:
 
     def teste_cima(self,voltapermitida = False):
         if(self.col>0 and not self.sucess):  ## coluna maior que zero 
-            if(grid_cells[self.row][self.col-1].id ==1 ):
+            if(grid_cells[self.row][self.col-1].id >0 ):
                 if(voltapermitida or  self.col-1 != self.last_col):
                     print("CIMA")
                     print("linha", self.row, "colula :", self.col ,"col - 1:", self.col-1 , "self last col ", self.last_col)
@@ -359,7 +359,7 @@ class AgenteDFS:
         self.last_row = self.row
         self.row = row
         self.col = col
-        if(grid_cells[self.row-1][self.col].id ==3):
+        if(grid_cells[self.row][self.col].id ==3):
             self.sucess = True
 
     def draw(self):
@@ -396,7 +396,7 @@ while not done:
 
     if modo == "1":
         agente.visitar_no()
-    if modo == "2":
+    if ( modo == "2" and agente.sucess== False):
         agente.expandir_no()
     
     pygame.display.flip()  
