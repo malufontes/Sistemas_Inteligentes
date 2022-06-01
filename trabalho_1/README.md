@@ -32,7 +32,7 @@ Selecione BFS[1] ou DFS[2]
 Para resolver o labrinto com BFS, digite 1 no terminal e precione enter e para resolver com DFS é só fazer o mesmo processo com o número 2.
 3. Seguidos os passos, a interface gráfica inicilizará mostrando o caminho percorrido pelo agente:
 
-<img src="ig.png" alt="Labritinto BFS"/>
+<img src="ig.png" alt="Labirinto BFS"/>
 
 	
 ## Autoria:
