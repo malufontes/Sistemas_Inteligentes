@@ -16,7 +16,7 @@ https://www.pygame.org/wiki/GettingStarted
 ```
 
 ## Guia de Uso:
-1. Para rodar o código, é necesário entrar no diretório ```trabalho_1``` e rodar um dos seguintes comandos no terminal:
+1. Para rodar o código, é necessário entrar no diretório ```trabalho_1``` e rodar um dos seguintes comandos no terminal:
 ```
 python maze_solver.py
 ```
