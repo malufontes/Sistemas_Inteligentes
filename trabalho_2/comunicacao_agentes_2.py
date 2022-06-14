@@ -22,10 +22,33 @@ class Sender(Agent):
         async def on_end(self):
             await self.agent.stop()
 
+    class sendback_msg(CyclicBehaviour):
+        async def run(self):
+            print("run -> sendback_msg")
+
+            msg = await self.receive(timeout=10)
+            if msg:
+                # msg = Message(to="maluf@jix.im")     # Instantiate the message
+                # msg.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                # msg.body = "Bora!"                    # Set the message content
+
+                # await self.send(msg)
+                # print("mensagem respondida!")
+                print("mensagem recebida do Receiver: " + msg.body)
+            else:
+                print("timeout do sendback_msg")
+
+
     async def setup(self):
         print("******** Sender inicializado")
         b = self.enviar_msg()
         self.add_behaviour(b)
+
+        c = self.sendback_msg()
+        template = Template()
+        template.set_metadata("performative", "request")
+        self.add_behaviour(c)
+
 
 class Receiver(Agent):
     class receber_msg(CyclicBehaviour):
@@ -35,6 +58,13 @@ class Receiver(Agent):
             msg = await self.receive(timeout = 10)
             if (msg):
                 print("msg recebida: " + msg.body)
+
+                msg2 = Message(to="andre@jix.im")     # Instantiate the message
+                msg2.set_metadata("performative", "request")  # Set the "inform" FIPA performative
+                msg2.body = "Bora?"                    # Set the message content
+
+                await self.send(msg2)
+                print("mensagem enviada para o Sender!")
             else:
                 print("timeout")
         
