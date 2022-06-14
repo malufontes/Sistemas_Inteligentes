@@ -54,8 +54,8 @@ class Gerador(Agent):
 
 gerador = Gerador("andre@jix.im", "RelouSI")
 #gerador.web.start(hostname="127.0.0.1", port="10000")
-gerador.start()
-#gerador.result()
+future = gerador.start()
+future.result()
 
 while gerador.is_alive():
     try:
