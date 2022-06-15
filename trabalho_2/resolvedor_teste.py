@@ -69,18 +69,19 @@ class ask_tipofuncao(State):
             resp = await self.receive(timeout=10)
             if(resp):
                 recebeu_resp = True
+                print("Resposta recebida: " + resp.body)
             else:
                 print("Timeout -> ask_tipofuncao")
 
         # selecionando qual subcompotamento (state) será selecionado
         if(resp.body == "1grau"):
-            print()
+            print("Resolvendo para função de 1 grau")
         else:
             if(resp.body == "2grau"):
-                print()
+                print("Resolvendo para função de 2 grau")
             else:
                 if(resp.body == "3grau"):
-                    print()
+                    print("Resolvendo para função de 3 grau")
                 else:
                     print("resposta recebida inválida")
 
