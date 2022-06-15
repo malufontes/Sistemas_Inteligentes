@@ -6,6 +6,7 @@ from spade.behaviour import OneShotBehaviour
 from spade.template import Template
 from spade.message import Message
 from spade.behaviour import FSMBehaviour, State
+from colorama import Fore
 import random
 import time
 
@@ -71,3 +72,21 @@ class resolvedor_2grau(State):
 class resolvedor_3grau(State):
     async def run(self):
         print()
+
+receiver_jid = "maluf@jix.im"
+receiver_password = "RelouSI"
+sender_jid = "andre@jix.im"
+sender_password = "RelouSI"
+
+resolvedor = Resolvedor(receiver_jid, receiver_password)
+future = resolvedor.start()
+future.result()
+
+while resolvedor.is_alive():
+    try:
+        time.sleep(1)
+    except:
+        print(Fore.WHITE + "Keyboard  Interrupt")
+        resolvedor.stop()
+        break
+print(Fore.WHITE + "Resolvedor finalizado!") 
