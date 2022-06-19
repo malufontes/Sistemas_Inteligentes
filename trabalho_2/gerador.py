@@ -15,11 +15,14 @@ class Gerador(Agent):
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 1):
         x = random.randint(-1000,1000)
+        # coloquei isso aq só pq tava testando a de primeiro grau, lembrar de apagar dps
+        x = -997
         a=0
         while a == 0:
             a = random.randint(-100,100)
         y = -1 * (a*x)
     # fiz essa parte do segundo grau cagada só pra dar ideia do q fazer, fique a vontade pra melhorar
+    # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 2):
         a=0
         while a == 0:
@@ -112,6 +115,8 @@ class Gerador(Agent):
         self.add_behaviour(ft, template)
 
 gerador = Gerador("andre@jix.im", "RelouSI")
+#essa parte aí do host pode ficar comentada, n serve pra nada nesse código
+#e tenho medo de dar xabu se descomentar
 #gerador.web.start(hostname="127.0.0.1", port="10000")
 future = gerador.start()
 future.result()

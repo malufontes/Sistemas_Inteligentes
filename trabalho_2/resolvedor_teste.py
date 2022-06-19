@@ -1,8 +1,5 @@
 from aiohttp_jinja2 import template
-from jinja2 import FileSystemBytecodeCache
 from spade.agent import Agent
-from spade.behaviour import CyclicBehaviour
-from spade.behaviour import OneShotBehaviour
 from spade.template import Template
 from spade.message import Message
 from spade.behaviour import FSMBehaviour, State
@@ -91,6 +88,30 @@ class ask_tipofuncao(State):
 class resolvedor_1grau(State):
     async def run(self):
         print("Dentro do resolvedor de primeiro grau:")
+
+        # tentar acertar um 0 da função da melhor maneira possível
+        # fiz isso aq da maneira mais porca possível só pra testar
+        # mas tem que pensar numa çógica melhor,
+        # provavelmente existe algoritmo pronto pra fazer isso se pesquisar
+
+        msg = Message(to=gerador_jid)
+        msg.set_metadata("performative", "subscribe")
+        for x in range(-1000,1000):
+            msg.body = str(int(x))
+            await self.send(msg)
+            resp = await self.receive(timeout=30)
+            if resp:
+                print("resposta: ", resp.body)
+                if(int(resp.body)==0):
+                    print("acertou miseravi")
+                    #esse .kill() era pra encerar o Resolvedor mas tá dando BO, dps olho como resolvo
+                    self.kill()
+
+    #isso aq era pra fazer o .kill funcionar mas sem sucesso até agr
+    async def on_end(self):
+        await self.agent.stop()
+
+
 
 class resolvedor_2grau(State):
     async def run(self):
