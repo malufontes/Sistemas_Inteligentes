@@ -76,26 +76,29 @@ class ask_tipofuncao(State):
         # selecionando qual subcompotamento (state) será selecionado
         if(resp.body == "1grau"):
             print("Resolvendo para função de 1 grau")
+            self.set_next_state(GRAU1_STATE)
         else:
             if(resp.body == "2grau"):
                 print("Resolvendo para função de 2 grau")
+                self.set_next_state(GRAU2_STATE)
             else:
                 if(resp.body == "3grau"):
                     print("Resolvendo para função de 3 grau")
+                    self.set_next_state(GRAU3_STATE)
                 else:
                     print("resposta recebida inválida")
 
 class resolvedor_1grau(State):
     async def run(self):
-        print()
+        print("Dentro do resolvedor de primeiro grau:")
 
 class resolvedor_2grau(State):
     async def run(self):
-        print()
+        print("Dentro do resolvedor de segundo grau:")
 
 class resolvedor_3grau(State):
     async def run(self):
-        print()
+        print("Dentro do resolvedor de terceiro grau:")
 
 resolvedor_jid = "maluf@jix.im"
 resolvedor_password = "RelouSI"

@@ -32,7 +32,7 @@ class Gerador(Agent):
                 msg.set_metadata("performative", "inform")
                 msg.body = "1grau" 
                 await self.send(msg)
-                print("Respondeu para" + str(msg.sender) + " com " + msg.body)
+                print("Respondeu para " + str(msg.sender) + " com " + msg.body)
                 
 
     async def setup(self):
