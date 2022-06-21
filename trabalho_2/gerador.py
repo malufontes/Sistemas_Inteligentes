@@ -9,8 +9,8 @@ class Gerador(Agent):
     #definindo o grau da função criada pelo Gerador
     grau = random.randint(1,3)
     # coloquei isso aq só pq tava testando a de primeiro grau, lembrar de apagar dps
-    grau = 1
-
+    grau = 3
+    coefs = {}
     # gerando as funções
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 1):
@@ -24,17 +24,37 @@ class Gerador(Agent):
     # fiz essa parte do segundo grau cagada só pra dar ideia do q fazer, fique a vontade pra melhorar
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 2):
-        a=0
-        while a == 0:
-            a = random.randint(-100,100)
-        b=0
-        while b == 0:
-            b = random.randint(-100,100)
-        c=0
+        x1 = random.randint(-500, 500)
+        x2 = random.randint(-500, 500)
+        c = 0
         while c == 0:
-            c = random.randint(-100,100)
+         c = random.randint(-100, 100)
+    
+        b = -(x1 + x2) * c
+        a =  (x1 * x2) * c
+
+        coefs = {"a": a, "b": b, "c": c}
+
+        print(f"Funcao de 2o grau. Raizes: x1={x1}, x2={x2}")
+        print(f"Funcao: {c}x^2 + ({b})x + ({a})")
+        
     if (grau == 3):
-        print()
+        x1 = random.randint(-500, 500)
+        x2 = random.randint(-500, 500)
+        x3 = random.randint(-500, 500)
+    
+        d = 0
+        while d == 0:
+          d = random.randint(-100, 100)
+
+        c = -(x1 + x2 + x3) * d
+        b = (x1*x2 + x2*x3 + x1*x3) * d
+        a = -(x1 * x2 * x3) * d
+
+        coefs = {"a": a, "b": b, "c": c, "d": d}
+
+        print(f"Funcao de 3o grau. Raizes: x1={x1}, x2={x2}, x3={x3}")
+        print(f"Funcao: {d}x^3 + ({c})x^2 + ({b})x + ({a})")
    
     class funcao_1grau(CyclicBehaviour):
         async def run(self):
@@ -53,14 +73,10 @@ class Gerador(Agent):
             res = await self.receive(timeout=5)
             if res:
                 x = float(res.body)
-
-                # tem que substituir o x (que o Resolvedor manda) pelo x na função que o
-                # gerador gera pra desolver o y resultante disso pro Resolvedor
-                # só seguir o exemplo da função de primeiro grau
-
-                msg = Message(to=str(res.sender)) 
-                msg.set_metadata("performative", "inform")  
-                msg.body = str(int(x))
+                fx = self.TestaX(x, self.coefs)
+                msg = Message(to=str(res.sender))
+                msg.set_metadata("performative", "inform")
+                msg.body = str(fx)
                 await self.send(msg)
 
     class funcao_3grau(CyclicBehaviour):
@@ -68,14 +84,10 @@ class Gerador(Agent):
             res = await self.receive(timeout=5)
             if res:
                 x = float(res.body)
-
-                # tem que substituir o x (que o Resolvedor manda) pelo x na função que o
-                # gerador gera pra desolver o y resultante disso pro Resolvedor
-                # só seguir o exemplo da função de primeiro grau
-
-                msg = Message(to=str(res.sender)) 
-                msg.set_metadata("performative", "inform")  
-                msg.body = str(int(x))
+                fx = self.TestaX(x, self.coefs)
+                msg = Message(to=str(res.sender))
+                msg.set_metadata("performative", "inform")
+                msg.body = str(fx)
                 await self.send(msg)
    
     class tipo_funcao(CyclicBehaviour):
