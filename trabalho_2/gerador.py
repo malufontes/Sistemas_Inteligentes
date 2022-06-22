@@ -80,7 +80,7 @@ class Gerador(Agent):
 
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
-                msg.body = str(fx)
+                msg.body = str(int(fx))
                 await self.send(msg)
 
     class funcao_3grau(CyclicBehaviour):
@@ -96,7 +96,7 @@ class Gerador(Agent):
                 
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
-                msg.body = str(fx)
+                msg.body = str(int(fx))
                 await self.send(msg)
    
     class tipo_funcao(CyclicBehaviour):

@@ -114,6 +114,7 @@ class resolvedor_1grau(State):
 
 
 class resolvedor_2grau(State):
+    
     async def run(self):
         print("Dentro do resolvedor de segundo grau:")
 
