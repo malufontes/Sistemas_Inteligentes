@@ -9,7 +9,7 @@ class Gerador(Agent):
     #definindo o grau da função criada pelo Gerador
     grau = random.randint(1,3)
     # coloquei isso aq só pq tava testando a de primeiro grau, lembrar de apagar dps
-    grau = 3
+    grau = 3 ##------------------------------------------------------------------------------------------------------------------ARRUMAR
     coefs = {}
     # gerando as funções
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
@@ -105,7 +105,7 @@ class Gerador(Agent):
             if msg:
                 msg = Message(to=str(msg.sender))
                 msg.set_metadata("performative", "inform")
-                msg.body = "1grau" 
+                msg.body = "2grau" 
                 await self.send(msg)
                 print("Respondeu para " + str(msg.sender) + " com " + msg.body)
                 

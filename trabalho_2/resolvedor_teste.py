@@ -25,9 +25,9 @@ class Resolvedor(Agent):
 
         # adicionando os possíveis subcomportamentos (States)
         comp.add_state(name=INITIAL_STATE, state=ask_tipofuncao(), initial=True)
-        comp.add_state(name=GRAU1_STATE, state=resolvedor_1grau())
+        comp.add_state(name=GRAU1_STATE, state=resolvedor_2grau())
         comp.add_state(name=GRAU2_STATE, state=resolvedor_2grau())
-        comp.add_state(name=GRAU3_STATE, state=resolvedor_3grau())
+        comp.add_state(name=GRAU3_STATE, state=resolvedor_2grau()) ## ---------------------------------------------------------------ARRUMAR
 
         # adicionando as possíveis transições de estado
         comp.add_transition(source=INITIAL_STATE, dest=GRAU1_STATE)
@@ -109,16 +109,62 @@ class resolvedor_1grau(State):
 
     #isso aq era pra fazer o .kill funcionar mas sem sucesso até agr
     async def on_end(self):
+        print("Dentro do resolvedor de segundo grau:")
+
+
+
         await self.agent.stop()
 
 
 
 class resolvedor_2grau(State):
-    
+
     async def run(self):
         print("Dentro do resolvedor de segundo grau:")
 
+        msg = Message(to=gerador_jid)
+        msg.set_metadata("performative", "subscribe")
+        tol = 0.1
+        a = -1000
+        b = 1000
+        msg.body = str(a)
+        await self.send(msg)
+        res_a = await self.receive(timeout=5)
+        fx_a = float(res_a.body)
+
+        msg.body = str(b)
+        await self.send(msg)
+        res_b = await self.receive(timeout=5)
+        fx_b = float(res_b.body)
+
+        c = a
+        fx_c = fx_a
+        while (abs(fx_c) >= tol):
+            c = int((a+b)/2)
+
+            msg.body = str(c)
+            await self.send(msg)
+            res_c = await self.receive(timeout=5)
+            fx_c = float(res_c.body)
+
+            print(f"x={c}, fx={fx_c}")
+            if (fx_c == 0.0):
+                break
+        
+            msg.body = str(a)
+            await self.send(msg)
+            res_a = await self.receive(timeout=5)
+            fx_a = float(res_a.body)
+
+            if (fx_c * fx_a < 0):
+                b = c
+            else:
+                a = c     
+
+
+
 class resolvedor_3grau(State):
+
     async def run(self):
         print("Dentro do resolvedor de terceiro grau:")
 
