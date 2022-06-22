@@ -73,7 +73,11 @@ class Gerador(Agent):
             res = await self.receive(timeout=5)
             if res:
                 x = float(res.body)
-                fx = self.TestaX(x, self.coefs)
+                a = gerador.coefs.get("a")
+                b = gerador.coefs.get("b") 
+                c = gerador.coefs.get("c") 
+                fx = a + b*x + c*x**2
+
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
                 msg.body = str(fx)
@@ -84,7 +88,12 @@ class Gerador(Agent):
             res = await self.receive(timeout=5)
             if res:
                 x = float(res.body)
-                fx = self.TestaX(x, self.coefs)
+                a = gerador.coefs.get("a")
+                b = gerador.coefs.get("b") 
+                c = gerador.coefs.get("c") 
+                d = gerador.coefs.get("d") 
+                fx = a + b*x + c*x**2 + d*x**3
+                
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
                 msg.body = str(fx)
