@@ -8,11 +8,10 @@ import random
 import time
 
 INITIAL_STATE = "ASK_TIPOFUNCAO"
-GRAU1_STATE = "GRAU_1"
-GRAU2_STATE = "GRAU_2"
-GRAU3_STATE = "GRAU_3"
-ACHAR_RAIZ_STATE = "ACHAR_RAIZ_STATE"
-CHECAR_RESP_STATE = "CHECAR_RESP_STATE"
+TESTE_EXTREMIDADESUP_STATE =  "TESTE_EXTREMIDADESUP"
+TESTE_EXTREMIDADEINF_STATE =  "TESTE_EXTREMIDADEINF"
+TESTE_RAIZ_STATE = "TESTE_RAIZ"
+CHECAR_RESP_STATE = "CHECAR_RESP"
 
 class Resolvedor(Agent):
     async def setup(self):
@@ -27,12 +26,14 @@ class Resolvedor(Agent):
 
         # adicionando os possíveis subcomportamentos (States)
         comp.add_state(name=INITIAL_STATE, state=ask_tipofuncao(), initial=True)
-        comp.add_state(name=ACHAR_RAIZ_STATE, state=bisseccao())
+        comp.add_state(name=TESTE_EXTREMIDADEINF_STATE, state=teste_extremidade_superior())
+        comp.add_state(name=TESTE_EXTREMIDADESUP_STATE, state=teste_extremidade_inferior())
+        comp.add_state(name=TESTE_RAIZ_STATE, state=bisseccao())
 
 
 
         # adicionando as possíveis transições de estado
-        comp.add_transition(source=INITIAL_STATE, dest=ACHAR_RAIZ_STATE)
+        # comp.add_transition(source=INITIAL_STATE, dest=ACHAR_RAIZ_STATE)
 
         # adicionando os comportamentos ao agente
         self.add_behaviour(comp,template)
@@ -73,29 +74,36 @@ class ask_tipofuncao(State):
         # selecionando qual subcompotamento (state) será selecionado
         if(resp.body == "1grau"):
             print("Resolvendo para função de 1 grau")
-            self.set_next_state(ACHAR_RAIZ_STATE)
+            self.set_next_state(TESTE_EXTREMIDADEINF_STATE)
         else:
             if(resp.body == "2grau"):
                 print("Resolvendo para função de 2 grau")
-                self.set_next_state(ACHAR_RAIZ_STATE)
+                self.set_next_state(TESTE_EXTREMIDADEINF_STATE)
             else:
                 if(resp.body == "3grau"):
                     print("Resolvendo para função de 3 grau")
-                    self.set_next_state(ACHAR_RAIZ_STATE)
+                    self.set_next_state(TESTE_EXTREMIDADEINF_STATE)
                 else:
                     print("resposta recebida inválida")
 
-class bisseccao(State):
+class teste_extremidade_inferior(State):
+    async def run(self):
+        print()
 
+class teste_extremidade_superior(State):
+    async def run(self):
+        print()
+
+class bisseccao(State):
     async def run(self):
         print("Dentro do resolvedor:")
 
         msg = Message(to=gerador_jid)
         msg.set_metadata("performative", "subscribe")
         tol = 0.1
-        Resolvedor.a = -1000
+        a = -1000
         b = 1000
-        msg.body = str(Resolvedor.a)
+        msg.body = str(a)
         await self.send(msg)
         res_a = await self.receive(timeout=5)
         fx_a = float(res_a.body)
@@ -105,13 +113,13 @@ class bisseccao(State):
         res_b = await self.receive(timeout=5)
         fx_b = float(res_b.body)
 
-        c = Resolvedor.a
+        c = a
         fx_c = fx_a
         while (abs(fx_c) >= tol):
-            c = int((Resolvedor.a+b)/2)
+            c = int((a+b)/2)
 
             msg.body = str(c)
-            await self.send(msg)   #----------------------------
+            await self.send(msg)
             res_c = await self.receive(timeout=5)
             fx_c = float(res_c.body)
 
@@ -119,15 +127,15 @@ class bisseccao(State):
             if (fx_c == 0.0):
                 break
         
-            # msg.body = str(Resolvedor.a)
-            # await self.send(msg)   #----------------------------
-            # res_a = await self.receive(timeout=5)
-            # fx_a = float(res_a.body)
+            msg.body = str(a)
+            await self.send(msg)
+            res_a = await self.receive(timeout=5)
+            fx_a = float(res_a.body)
 
             if (fx_c * fx_a < 0):
                 b = c
             else:
-                Resolvedor.a = c     
+                a = c     
 
 
 resolvedor_jid = "maluf@jix.im"

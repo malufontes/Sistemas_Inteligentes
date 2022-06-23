@@ -122,16 +122,12 @@ class Gerador(Agent):
 
         if(Gerador.grau == 1):
             tf = self.funcao_1grau()
-            print("Funcao de 1o grau: ", Gerador.x)
-            print("Funcao: ", Gerador.a, "x + (", Gerador.y, ")")
             self.add_behaviour(tf,t)
         if(Gerador.grau == 2):
             tf = self.funcao_2grau()
-            print("Funcao de 2o grau: ")
             self.add_behaviour(tf,t)
         if(Gerador.grau == 3):
             tf = self.funcao_3grau()
-            print("Funcao de 3o grau: ")
             self.add_behaviour(tf,t)
 
         ft = self.tipo_funcao()
