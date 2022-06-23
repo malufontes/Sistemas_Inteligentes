@@ -11,6 +11,8 @@ INITIAL_STATE = "ASK_TIPOFUNCAO"
 GRAU1_STATE = "GRAU_1"
 GRAU2_STATE = "GRAU_2"
 GRAU3_STATE = "GRAU_3"
+ACHAR_RAIZ_STATE = "ACHAR_RAIZ_STATE"
+CHECAR_RESP_STATE = "CHECAR_RESP_STATE"
 
 class Resolvedor(Agent):
     async def setup(self):
@@ -25,14 +27,12 @@ class Resolvedor(Agent):
 
         # adicionando os possíveis subcomportamentos (States)
         comp.add_state(name=INITIAL_STATE, state=ask_tipofuncao(), initial=True)
-        comp.add_state(name=GRAU1_STATE, state=resolvedor_2grau())
-        comp.add_state(name=GRAU2_STATE, state=resolvedor_2grau())
-        comp.add_state(name=GRAU3_STATE, state=resolvedor_2grau()) ## ---------------------------------------------------------------ARRUMAR
+        comp.add_state(name=ACHAR_RAIZ_STATE, state=bisseccao())
+
+
 
         # adicionando as possíveis transições de estado
-        comp.add_transition(source=INITIAL_STATE, dest=GRAU1_STATE)
-        comp.add_transition(source=INITIAL_STATE, dest=GRAU2_STATE)
-        comp.add_transition(source=INITIAL_STATE, dest=GRAU3_STATE)
+        comp.add_transition(source=INITIAL_STATE, dest=ACHAR_RAIZ_STATE)
 
         # adicionando os comportamentos ao agente
         self.add_behaviour(comp,template)
@@ -73,54 +73,22 @@ class ask_tipofuncao(State):
         # selecionando qual subcompotamento (state) será selecionado
         if(resp.body == "1grau"):
             print("Resolvendo para função de 1 grau")
-            self.set_next_state(GRAU1_STATE)
+            self.set_next_state(ACHAR_RAIZ_STATE)
         else:
             if(resp.body == "2grau"):
                 print("Resolvendo para função de 2 grau")
-                self.set_next_state(GRAU2_STATE)
+                self.set_next_state(ACHAR_RAIZ_STATE)
             else:
                 if(resp.body == "3grau"):
                     print("Resolvendo para função de 3 grau")
-                    self.set_next_state(GRAU3_STATE)
+                    self.set_next_state(ACHAR_RAIZ_STATE)
                 else:
                     print("resposta recebida inválida")
 
-class resolvedor_1grau(State):
-    async def run(self):
-        print("Dentro do resolvedor de primeiro grau:")
-
-        # tentar acertar um 0 da função da melhor maneira possível
-        # fiz isso aq da maneira mais porca possível só pra testar
-        # mas tem que pensar numa çógica melhor,
-        # provavelmente existe algoritmo pronto pra fazer isso se pesquisar
-
-        msg = Message(to=gerador_jid)
-        msg.set_metadata("performative", "subscribe")
-        for x in range(-1000,1000):
-            msg.body = str(int(x))
-            await self.send(msg)
-            resp = await self.receive(timeout=30)
-            if resp:
-                print("resposta: ", resp.body)
-                if(int(resp.body)==0):
-                    print("acertou miseravi")
-                    #esse .kill() era pra encerar o Resolvedor mas tá dando BO, dps olho como resolvo
-                    self.kill()
-
-    #isso aq era pra fazer o .kill funcionar mas sem sucesso até agr
-    async def on_end(self):
-        print("Dentro do resolvedor de segundo grau:")
-
-
-
-        await self.agent.stop()
-
-
-
-class resolvedor_2grau(State):
+class bisseccao(State):
 
     async def run(self):
-        print("Dentro do resolvedor de segundo grau:")
+        print("Dentro do resolvedor:")
 
         msg = Message(to=gerador_jid)
         msg.set_metadata("performative", "subscribe")
@@ -161,12 +129,6 @@ class resolvedor_2grau(State):
             else:
                 a = c     
 
-
-
-class resolvedor_3grau(State):
-
-    async def run(self):
-        print("Dentro do resolvedor de terceiro grau:")
 
 resolvedor_jid = "maluf@jix.im"
 resolvedor_password = "RelouSI"

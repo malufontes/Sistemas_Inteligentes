@@ -8,19 +8,17 @@ import time
 class Gerador(Agent):
     #definindo o grau da função criada pelo Gerador
     grau = random.randint(1,3)
-    # coloquei isso aq só pq tava testando a de primeiro grau, lembrar de apagar dps
-    grau = 3 ##------------------------------------------------------------------------------------------------------------------ARRUMAR
     coefs = {}
     # gerando as funções
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 1):
         x = random.randint(-1000,1000)
-        # coloquei isso aq só pq tava testando a de primeiro grau, lembrar de apagar dps
-        x = -997
         a=0
         while a == 0:
             a = random.randint(-100,100)
         y = -1 * (a*x)
+        print(f"Funcao de 1o grau. Raiz: x={x}")
+        print(f"Funcao: {a}x + ({y})")
     # fiz essa parte do segundo grau cagada só pra dar ideia do q fazer, fique a vontade pra melhorar
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
     if (grau == 2):
@@ -77,7 +75,7 @@ class Gerador(Agent):
                 b = gerador.coefs.get("b") 
                 c = gerador.coefs.get("c") 
                 fx = a + b*x + c*x**2
-
+                print("Enviou para " + str(res.sender) + " f(",res.body,")= ",fx,"=>",int(fx))
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
                 msg.body = str(int(fx))
@@ -93,7 +91,7 @@ class Gerador(Agent):
                 c = gerador.coefs.get("c") 
                 d = gerador.coefs.get("d") 
                 fx = a + b*x + c*x**2 + d*x**3
-                
+                print("Enviou para " + str(res.sender) + " f(",res.body,")= ",fx,"=>",int(fx))
                 msg = Message(to=str(res.sender))
                 msg.set_metadata("performative", "inform")
                 msg.body = str(int(fx))
@@ -103,15 +101,21 @@ class Gerador(Agent):
         async def run(self):
             msg = await self.receive(timeout=5)
             if msg:
+                resolvedorjid = str(msg.sender)
                 msg = Message(to=str(msg.sender))
                 msg.set_metadata("performative", "inform")
-                msg.body = "2grau" 
+                if(Gerador.grau==1):
+                    msg.body = "1grau" 
+                if(Gerador.grau==2):
+                    msg.body = "2grau" 
+                if(Gerador.grau==3):
+                    msg.body = "3grau"                 
                 await self.send(msg)
-                print("Respondeu para " + str(msg.sender) + " com " + msg.body)
+                print("Respondeu para " + resolvedorjid + " com " + msg.body)
                 
 
     async def setup(self):
-        print("Hello World! I'm agent {}".format(str(self.jid)))
+        print("Agente Gerador {} instanciado".format(str(self.jid)))
         
         t = Template()
         t.set_metadata("performative","subscribe")
