@@ -112,11 +112,11 @@ class checar_resp(State):
                 print("Solução encontrada!")
             else:
 
-                if Resolvedor.alterancia:
-                    Resolvedor.fsup = int(resp.body)
+                if not Resolvedor.alterancia:
+                    Resolvedor.fsup = float(resp.body)
                     Resolvedor.alterancia = not Resolvedor.alterancia
                 else:
-                    Resolvedor.finf = int(resp.body)
+                    Resolvedor.finf = float(resp.body)
                     Resolvedor.alterancia = not Resolvedor.alterancia
 
                 if(not Resolvedor.teste_superior):
@@ -151,17 +151,12 @@ class bisseccao(State):
     async def run(self):
         print("Bisseccao")
 
-        a = -1000
-        b = 1000
+        a = Resolvedor.inf
+        b = Resolvedor.sup
 
-        msg = Message(to=gerador_jid)
-        msg.set_metadata("performative", "subscribe")
         tol = 0.4
-        msg.body = str(a)
-        await self.send(msg)
-        res_a = await self.receive(timeout=5)
 
-        fx_a = float(res_a.body)
+        fx_a = Resolvedor.finf
         fx_p = 10
 
         while (abs(fx_p) >= tol):
