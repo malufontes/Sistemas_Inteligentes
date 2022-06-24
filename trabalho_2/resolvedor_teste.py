@@ -8,12 +8,24 @@ import random
 import time
 
 INITIAL_STATE = "ASK_TIPOFUNCAO"
-TESTE_EXTREMIDADESUP_STATE =  "TESTE_EXTREMIDADESUP"
 TESTE_EXTREMIDADEINF_STATE =  "TESTE_EXTREMIDADEINF"
-TESTE_RAIZ_STATE = "TESTE_RAIZ"
+TESTE_EXTREMIDADESUP_STATE =  "TESTE_EXTREMIDADESUP"
+BISSECCAO_STATE = "BISSECCAO"
 CHECAR_RESP_STATE = "CHECAR_RESP"
 
 class Resolvedor(Agent):
+
+    #definidos as extremidades do intervalo de possíveis raizes
+    sup = 1000
+    inf = -1000
+    fsup = -1
+    finf = -1
+    aux = -1
+    faux = -1
+
+    teste_superior = False
+    alterancia = True
+
     async def setup(self):
         print("Agente Resolvedor {} instanciado".format(str(self.jid)))
 
@@ -26,14 +38,20 @@ class Resolvedor(Agent):
 
         # adicionando os possíveis subcomportamentos (States)
         comp.add_state(name=INITIAL_STATE, state=ask_tipofuncao(), initial=True)
-        comp.add_state(name=TESTE_EXTREMIDADEINF_STATE, state=teste_extremidade_superior())
-        comp.add_state(name=TESTE_EXTREMIDADESUP_STATE, state=teste_extremidade_inferior())
-        comp.add_state(name=TESTE_RAIZ_STATE, state=bisseccao())
+        comp.add_state(name=TESTE_EXTREMIDADEINF_STATE, state=teste_extremidade_inferior())
+        comp.add_state(name=TESTE_EXTREMIDADESUP_STATE, state=teste_extremidade_superior())
+        comp.add_state(name=BISSECCAO_STATE, state=bisseccao())
+        comp.add_state(name=CHECAR_RESP_STATE, state=checar_resp())
 
 
 
         # adicionando as possíveis transições de estado
-        # comp.add_transition(source=INITIAL_STATE, dest=ACHAR_RAIZ_STATE)
+        comp.add_transition(source=INITIAL_STATE, dest=TESTE_EXTREMIDADEINF_STATE)
+        comp.add_transition(source=TESTE_EXTREMIDADEINF_STATE, dest=CHECAR_RESP_STATE)
+        comp.add_transition(source=CHECAR_RESP_STATE, dest=TESTE_EXTREMIDADESUP_STATE)
+        comp.add_transition(source=TESTE_EXTREMIDADESUP_STATE, dest=CHECAR_RESP_STATE)
+        comp.add_transition(source=CHECAR_RESP_STATE, dest=BISSECCAO_STATE)
+        comp.add_transition(source=BISSECCAO_STATE, dest=CHECAR_RESP_STATE)
 
         # adicionando os comportamentos ao agente
         self.add_behaviour(comp,template)
@@ -86,56 +104,85 @@ class ask_tipofuncao(State):
                 else:
                     print("resposta recebida inválida")
 
+class checar_resp(State):
+    async def run(self):
+        resp = await self.receive(timeout=5)
+        if resp:
+            if int(resp.body) == 0:
+                print("Solução encontrada!")
+            else:
+
+                if Resolvedor.alterancia:
+                    Resolvedor.fsup = int(resp.body)
+                    Resolvedor.alterancia = not Resolvedor.alterancia
+                else:
+                    Resolvedor.finf = int(resp.body)
+                    Resolvedor.alterancia = not Resolvedor.alterancia
+
+                if(not Resolvedor.teste_superior):
+                    self.set_next_state(TESTE_EXTREMIDADESUP_STATE)
+                    Resolvedor.teste_superior = True
+                else:
+                    self.set_next_state(BISSECCAO_STATE)
+        else:
+            print("Timeout -> checar_resp")
+
 class teste_extremidade_inferior(State):
     async def run(self):
-        print()
-
-class teste_extremidade_superior(State):
-    async def run(self):
-        print()
-
-class bisseccao(State):
-    async def run(self):
-        print("Dentro do resolvedor:")
+        print("Teste extremidade inferior")
 
         msg = Message(to=gerador_jid)
         msg.set_metadata("performative", "subscribe")
-        tol = 0.1
+        msg.body = str(Resolvedor.inf)
+        await self.send(msg)
+        self.set_next_state(CHECAR_RESP_STATE)
+
+class teste_extremidade_superior(State):
+    async def run(self):
+        print("Teste extremidade superior")
+
+        msg = Message(to=gerador_jid)
+        msg.set_metadata("performative", "subscribe")
+        msg.body = str(Resolvedor.sup)
+        await self.send(msg)
+        self.set_next_state(CHECAR_RESP_STATE)
+
+class bisseccao(State):
+    async def run(self):
+        print("Bisseccao")
+
         a = -1000
         b = 1000
+
+        msg = Message(to=gerador_jid)
+        msg.set_metadata("performative", "subscribe")
+        tol = 0.4
         msg.body = str(a)
         await self.send(msg)
         res_a = await self.receive(timeout=5)
+
         fx_a = float(res_a.body)
+        fx_p = 10
 
-        msg.body = str(b)
-        await self.send(msg)
-        res_b = await self.receive(timeout=5)
-        fx_b = float(res_b.body)
-
-        c = a
-        fx_c = fx_a
-        while (abs(fx_c) >= tol):
-            c = int((a+b)/2)
-
-            msg.body = str(c)
+        while (abs(fx_p) >= tol):
+            p = a + (b-a)/2
+            msg = Message(to=gerador_jid)
+            msg.set_metadata("performative", "subscribe")
+            msg.body = str(int(p))
             await self.send(msg)
-            res_c = await self.receive(timeout=5)
-            fx_c = float(res_c.body)
-
-            print(f"x={c}, fx={fx_c}")
-            if (fx_c == 0.0):
+            res_p = await self.receive(timeout=5)
+            fx_p = float(res_p.body)
+            if(fx_p==0):
+                print("foiii")
                 break
-        
-            msg.body = str(a)
-            await self.send(msg)
-            res_a = await self.receive(timeout=5)
-            fx_a = float(res_a.body)
 
-            if (fx_c * fx_a < 0):
-                b = c
+            if(fx_a*fx_p>0):
+                a = p
+                fx_a = fx_p
             else:
-                a = c     
+                b = p 
+
+            
 
 
 resolvedor_jid = "maluf@jix.im"
