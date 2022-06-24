@@ -13,6 +13,8 @@ TESTE_EXTREMIDADESUP_STATE =  "TESTE_EXTREMIDADESUP"
 BISSECCAO_STATE = "BISSECCAO"
 CHECAR_RESP_STATE = "CHECAR_RESP"
 
+
+
 class Resolvedor(Agent):
 
     #definidos as extremidades do intervalo de possíveis raizes
@@ -23,8 +25,10 @@ class Resolvedor(Agent):
     aux = -1
     faux = -1
 
-    teste_superior = False
+    teste_superior = True
+    teste_inferior = False
     alterancia = True
+    bisseccao_first = True
 
     async def setup(self):
         print("Agente Resolvedor {} instanciado".format(str(self.jid)))
@@ -110,20 +114,31 @@ class checar_resp(State):
         if resp:
             if int(resp.body) == 0:
                 print("Solução encontrada!")
+                self.kill()
+                #ir para o estado final
             else:
+                if(Resolvedor.teste_superior and Resolvedor.teste_inferior):
+                    Resolvedor.faux = float(resp.body)
 
-                if not Resolvedor.alterancia:
+                if not Resolvedor.teste_superior:
                     Resolvedor.fsup = float(resp.body)
-                    Resolvedor.alterancia = not Resolvedor.alterancia
-                else:
-                    Resolvedor.finf = float(resp.body)
-                    Resolvedor.alterancia = not Resolvedor.alterancia
-
-                if(not Resolvedor.teste_superior):
-                    self.set_next_state(TESTE_EXTREMIDADESUP_STATE)
-                    Resolvedor.teste_superior = True
-                else:
                     self.set_next_state(BISSECCAO_STATE)
+                    Resolvedor.teste_superior = True
+                if not Resolvedor.teste_inferior:
+                    Resolvedor.finf = float(resp.body)
+                    self.set_next_state(TESTE_EXTREMIDADESUP_STATE)
+                    Resolvedor.teste_inferior = True
+                    Resolvedor.teste_superior = False
+
+
+                # if Resolvedor.alterancia:
+                #     Resolvedor.faux = float(resp.body)
+                #     Resolvedor.alterancia = not Resolvedor.alterancia
+                # else:
+                #     # Resolvedor.fsup = float(resp.body)
+                #     Resolvedor.alterancia = not Resolvedor.alterancia
+
+
         else:
             print("Timeout -> checar_resp")
 
@@ -151,31 +166,69 @@ class bisseccao(State):
     async def run(self):
         print("Bisseccao")
 
-        a = Resolvedor.inf
-        b = Resolvedor.sup
 
-        tol = 0.4
+        # if Resolvedor.alterancia:
+        #     Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
+        #     msg = Message(to=gerador_jid)
+        #     msg.set_metadata("performative", "subscribe")
+        #     msg.body = str(int(Resolvedor.aux))
+        #     await self.send(msg)
+        # else:
+        #     if(Resolvedor.finf*Resolvedor.finf>0):
+        #         Resolvedor.inf = Resolvedor.aux
+        #         Resolvedor.finf = Resolvedor.faux
+        #     else:
+        #         Resolvedor.sup = Resolvedor.sup
 
-        fx_a = Resolvedor.finf
-        fx_p = 10
-
-        while (abs(fx_p) >= tol):
-            p = a + (b-a)/2
+        if Resolvedor.bisseccao_first:
+            Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
             msg = Message(to=gerador_jid)
             msg.set_metadata("performative", "subscribe")
-            msg.body = str(int(p))
+            msg.body = str(int(Resolvedor.aux))
             await self.send(msg)
-            res_p = await self.receive(timeout=5)
-            fx_p = float(res_p.body)
-            if(fx_p==0):
-                print("foiii")
-                break
-
-            if(fx_a*fx_p>0):
-                a = p
-                fx_a = fx_p
+            Resolvedor.bisseccao_first = False
+        else:
+            if(Resolvedor.finf*Resolvedor.faux>0):
+                Resolvedor.inf = Resolvedor.aux
+                Resolvedor.finf = Resolvedor.faux
             else:
-                b = p 
+                Resolvedor.sup = Resolvedor.aux
+
+            Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
+            msg = Message(to=gerador_jid)
+            msg.set_metadata("performative", "subscribe")
+            msg.body = str(int(Resolvedor.aux))
+            await self.send(msg)
+
+            
+        self.set_next_state(CHECAR_RESP_STATE)
+
+        # a = Resolvedor.inf
+        # b = Resolvedor.sup
+
+        # tol = 0.4
+
+        # fx_a = Resolvedor.finf
+        # fx_p = 10
+
+        # while (abs(fx_p) >= tol):
+        #     p = a + (b-a)/2
+        #     msg = Message(to=gerador_jid)
+        #     msg.set_metadata("performative", "subscribe")
+        #     msg.body = str(int(p))
+        #     await self.send(msg)
+
+        #     res_p = await self.receive(timeout=5)
+        #     fx_p = float(res_p.body)
+        #     if(fx_p==0):
+        #         print("foiii")
+        #         break
+
+        #     if(fx_a*fx_p>0):
+        #         a = p
+        #         fx_a = fx_p
+        #     else:
+        #         b = p 
 
             
 
