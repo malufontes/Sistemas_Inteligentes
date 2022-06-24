@@ -8,7 +8,7 @@ import time
 class Gerador(Agent):
     #definindo o grau da função criada pelo Gerador
     grau = random.randint(1,3)
-    # grau = 1
+    grau = 2
     coefs = {}
     # gerando as funções
     # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
@@ -26,6 +26,8 @@ class Gerador(Agent):
     if (grau == 2):
         x1 = random.randint(-500, 500)
         x2 = random.randint(-500, 500)
+        x1 = -174
+        x2 = -452
         c = 0
         while c == 0:
          c = random.randint(-100, 100)
