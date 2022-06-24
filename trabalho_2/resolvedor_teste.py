@@ -12,8 +12,7 @@ TESTE_EXTREMIDADEINF_STATE =  "TESTE_EXTREMIDADEINF"
 TESTE_EXTREMIDADESUP_STATE =  "TESTE_EXTREMIDADESUP"
 BISSECCAO_STATE = "BISSECCAO"
 CHECAR_RESP_STATE = "CHECAR_RESP"
-
-
+FINAL_STATE = "FINAL_STATE"
 
 class Resolvedor(Agent):
 
@@ -46,6 +45,7 @@ class Resolvedor(Agent):
         comp.add_state(name=TESTE_EXTREMIDADESUP_STATE, state=teste_extremidade_superior())
         comp.add_state(name=BISSECCAO_STATE, state=bisseccao())
         comp.add_state(name=CHECAR_RESP_STATE, state=checar_resp())
+        comp.add_state(name=FINAL_STATE, state=final())
 
 
 
@@ -56,6 +56,7 @@ class Resolvedor(Agent):
         comp.add_transition(source=TESTE_EXTREMIDADESUP_STATE, dest=CHECAR_RESP_STATE)
         comp.add_transition(source=CHECAR_RESP_STATE, dest=BISSECCAO_STATE)
         comp.add_transition(source=BISSECCAO_STATE, dest=CHECAR_RESP_STATE)
+        comp.add_transition(source=CHECAR_RESP_STATE, dest=FINAL_STATE)
 
         # adicionando os comportamentos ao agente
         self.add_behaviour(comp,template)
@@ -114,7 +115,7 @@ class checar_resp(State):
         if resp:
             if int(resp.body) == 0:
                 print("Solução encontrada!")
-                self.kill()
+                self.set_next_state(FINAL_STATE)
                 #ir para o estado final
             else:
                 if(Resolvedor.teste_superior and Resolvedor.teste_inferior):
@@ -230,7 +231,9 @@ class bisseccao(State):
         #     else:
         #         b = p 
 
-            
+class final(State):
+    async def run(self):
+        print("é isso, chegamos ao final meus amigos")
 
 
 resolvedor_jid = "maluf@jix.im"
