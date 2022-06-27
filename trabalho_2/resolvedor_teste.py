@@ -158,8 +158,10 @@ class teste_extremidade_superior(State):
 class bisseccao(State):
     async def run(self):
         print("Bisseccao")
+        print(Resolvedor.bisseccao_first)
 
-        if Resolvedor.bisseccao_first:
+
+        if Resolvedor.bisseccao_first:  
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
             msg = Message(to=gerador_jid)
             msg.set_metadata("performative", "subscribe")
@@ -171,19 +173,45 @@ class bisseccao(State):
                 Resolvedor.inf = Resolvedor.aux
                 Resolvedor.finf = Resolvedor.faux
             else:
+                print("Teste 1 ")
+                print(resolvedor.aux)
                 Resolvedor.sup = Resolvedor.aux
+
+            print("Teste 2 inf ")
+            print(resolvedor.inf)
+            print("Teste 3 sup - inf")
+            print(Resolvedor.sup - Resolvedor.inf)
 
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
 
             if (Resolvedor.aux == Resolvedor.checkpoint):
                 print("Deu merda")
                 
+            print(resolvedor.aux)
             Resolvedor.checkpoint = Resolvedor.aux
             msg = Message(to=gerador_jid)
             msg.set_metadata("performative", "subscribe")
             msg.body = str(int(Resolvedor.aux))
             await self.send(msg)
+            if (Resolvedor.checkpoint > 999.5):
+                Resolvedor.sup = -1000
+                Resolvedor.inf = -1
+                Resolvedor.fsup = -1
+                Resolvedor.finf = -1
+                Resolvedor.aux = -1
+                Resolvedor.faux = -1
+                Resolvedor.checkpoint = -1001
 
+                teste_superior = True
+                teste_inferior = False
+                bisseccao_first = True
+            if (Resolvedor.checkpoint < -999):
+                print("entrou AA")
+                Resolvedor.aux =1000
+                resolvedor.inf = 500
+                resolvedor.sup = 1000
+                resolvedor.checkpoint = 1000
+                
         self.set_next_state(CHECAR_RESP_STATE)
 
 

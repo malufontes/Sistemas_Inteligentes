@@ -26,12 +26,13 @@ class Gerador(Agent):
     if (grau == 2):
         x1 = random.randint(-500, 500)
         x2 = random.randint(-500, 500)
+
         # dá merda quando tem 2 raizes negativas
 
         # x1 = -174
-        # x2 = -452
-        x1 = -174
-        x2 = 452
+        #x2 = -452
+        x1 = 435
+        x2 = 999
         c = 0
         while c == 0:
          c = random.randint(-100, 100)
