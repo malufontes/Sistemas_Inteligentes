@@ -162,7 +162,9 @@ class bisseccao(State):
 
 
         if Resolvedor.bisseccao_first:  
+            print("Entrou aqui")
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
+            print(Resolvedor.aux)
             msg = Message(to=gerador_jid)
             msg.set_metadata("performative", "subscribe")
             msg.body = str(int(Resolvedor.aux))
@@ -171,21 +173,19 @@ class bisseccao(State):
         else:
             if(Resolvedor.finf*Resolvedor.faux>0):
                 Resolvedor.inf = Resolvedor.aux
+                print("Resolvedor inf")
+                print(resolvedor.inf)
                 Resolvedor.finf = Resolvedor.faux
             else:
-                print("Teste 1 ")
-                print(resolvedor.aux)
+                print("ENTROUUU ELSE")
                 Resolvedor.sup = Resolvedor.aux
 
-            print("Teste 2 inf ")
-            print(resolvedor.inf)
-            print("Teste 3 sup - inf")
             print(Resolvedor.sup - Resolvedor.inf)
 
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
 
             if (Resolvedor.aux == Resolvedor.checkpoint):
-                print("Deu merda")
+                print("Erro")
                 
             print(resolvedor.aux)
             Resolvedor.checkpoint = Resolvedor.aux
@@ -193,24 +193,26 @@ class bisseccao(State):
             msg.set_metadata("performative", "subscribe")
             msg.body = str(int(Resolvedor.aux))
             await self.send(msg)
+
             if (Resolvedor.checkpoint > 999.5):
                 Resolvedor.sup = -1000
                 Resolvedor.inf = -1
                 Resolvedor.fsup = -1
                 Resolvedor.finf = -1
-                Resolvedor.aux = -1
-                Resolvedor.faux = -1
-                Resolvedor.checkpoint = -1001
+                Resolvedor.aux = -1000
+                Resolvedor.faux = -1000
+                Resolvedor.checkpoint = -999.4
 
-                teste_superior = True
-                teste_inferior = False
-                bisseccao_first = True
-            if (Resolvedor.checkpoint < -999):
+                
+            if (Resolvedor.checkpoint < -999.5):
                 print("entrou AA")
-                Resolvedor.aux =1000
-                resolvedor.inf = 500
-                resolvedor.sup = 1000
-                resolvedor.checkpoint = 1000
+                Resolvedor.sup = 1000
+                Resolvedor.inf = 1
+                Resolvedor.fsup = 1000
+                Resolvedor.finf = 1
+                Resolvedor.aux = 1000
+                Resolvedor.faux = 1000
+                Resolvedor.checkpoint = 999.4
                 
         self.set_next_state(CHECAR_RESP_STATE)
 
