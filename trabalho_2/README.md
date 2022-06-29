@@ -22,7 +22,9 @@ python3 resolvedor_teste.py
 ```
 
 ## Considerações:
-
+1. O agente Gerador deve ser rodado primeiro para que ele possa estar pronto para responder as menagens enviadas pelo Resolvedor
+2. Foram criados 2 contas no jix, uma para o Gerador e outra para o Resolvedor, caso seja necessário trocá-las, é possível fazer isso no final do código. Mais especificamente na inicialização do gerador no arquivo gerador.py, e nas variáveis resolvedor_jid, resolvedor_password, gerador_jid e gerador_password no arquivo resolvedor.py.
+3. Caso a conta jix do Gerador seja trocada, lembrar de atulizar o novo endereço no código do Resolvedor.
 	
 ## Autoria:
 - Maria Luiza Fontes Dantas 
