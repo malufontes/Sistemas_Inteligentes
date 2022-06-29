@@ -144,11 +144,11 @@ class teste_extremidade_superior(State):
 class bisseccao(State):
     async def run(self):
         print("Bisseccao")
-        print(Resolvedor.bisseccao_first)
+        # print(Resolvedor.bisseccao_first)
 
 
         if Resolvedor.bisseccao_first:  
-            print("Entrou aqui")
+            # print("Entrou aqui")
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
             print(Resolvedor.aux)
             msg = Message(to=gerador_jid)
@@ -159,21 +159,21 @@ class bisseccao(State):
         else:
             if(Resolvedor.finf*Resolvedor.faux>0):
                 Resolvedor.inf = Resolvedor.aux
-                print("Resolvedor inf")
-                print(resolvedor.inf)
+                # print("Resolvedor inf")
+                # print(resolvedor.inf)
                 Resolvedor.finf = Resolvedor.faux
             else:
-                print("ENTROUUU ELSE")
+                # print("ENTROUUU ELSE")
                 Resolvedor.sup = Resolvedor.aux
 
-            print(Resolvedor.sup - Resolvedor.inf)
+            # print(Resolvedor.sup - Resolvedor.inf)
 
             Resolvedor.aux = Resolvedor.inf + (Resolvedor.sup - Resolvedor.inf)/2
 
             if (Resolvedor.aux == Resolvedor.checkpoint):
                 print("Erro")
                 
-            print(resolvedor.aux)
+            # print(resolvedor.aux)
             Resolvedor.checkpoint = Resolvedor.aux
             msg = Message(to=gerador_jid)
             msg.set_metadata("performative", "subscribe")
@@ -191,7 +191,7 @@ class bisseccao(State):
 
                 
             if (Resolvedor.checkpoint < -999.5):
-                print("entrou AA")
+                # print("entrou AA")
                 Resolvedor.sup = 1000
                 Resolvedor.inf = 1
                 Resolvedor.fsup = 1000
