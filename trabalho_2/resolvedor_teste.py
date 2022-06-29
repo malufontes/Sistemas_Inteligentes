@@ -16,7 +16,6 @@ FINAL_STATE = "FINAL_STATE"
 
 class Resolvedor(Agent):
 
-    #definidos as extremidades do intervalo de possíveis raizes
     sup = 1000
     inf = -1000
     fsup = -1
@@ -32,14 +31,11 @@ class Resolvedor(Agent):
     async def setup(self):
         print("Agente Resolvedor {} instanciado".format(str(self.jid)))
 
-        # definindo o tipo de mensagem que será recebida pelo resolvedor
         template = Template()
-        template.set_metadata("performative", "inform") # vai recer uma msg do tipo "inform"
+        template.set_metadata("performative", "inform")
 
-        # definindo o tipo de comportamento
         comp = comportamentos()
 
-        # adicionando os possíveis subcomportamentos (States)
         comp.add_state(name=INITIAL_STATE, state=ask_tipofuncao(), initial=True)
         comp.add_state(name=TESTE_EXTREMIDADEINF_STATE, state=teste_extremidade_inferior())
         comp.add_state(name=TESTE_EXTREMIDADESUP_STATE, state=teste_extremidade_superior())
@@ -47,9 +43,6 @@ class Resolvedor(Agent):
         comp.add_state(name=CHECAR_RESP_STATE, state=checar_resp())
         comp.add_state(name=FINAL_STATE, state=final())
 
-
-
-        # adicionando as possíveis transições de estado
         comp.add_transition(source=INITIAL_STATE, dest=TESTE_EXTREMIDADEINF_STATE)
         comp.add_transition(source=TESTE_EXTREMIDADEINF_STATE, dest=CHECAR_RESP_STATE)
         comp.add_transition(source=CHECAR_RESP_STATE, dest=TESTE_EXTREMIDADESUP_STATE)
@@ -58,11 +51,9 @@ class Resolvedor(Agent):
         comp.add_transition(source=BISSECCAO_STATE, dest=CHECAR_RESP_STATE)
         comp.add_transition(source=CHECAR_RESP_STATE, dest=FINAL_STATE)
 
-        # adicionando os comportamentos ao agente
         self.add_behaviour(comp,template)
 
 
-#comportamento principal, ele que vai gerenciar os subcomportamentos (States)
 class comportamentos(FSMBehaviour):
     async def on_start(self):
         print()
@@ -71,17 +62,13 @@ class comportamentos(FSMBehaviour):
         print()
         await self.agent.stop() 
 
-# perguntar para o Gerador qual o tipo de função que será utilizada
 class ask_tipofuncao(State):
     async def run(self):
         print("Perguntando o tipo de função ...")
 
-        # o Gerador (tipo_funcao()) recebe essa pergunta como "request"
-        # logo, a msg é setada como "request"
         msg = Message(to=gerador_jid)
         msg.set_metadata("performative", "request")
-        msg.body = "Qual o tipo da função?"             # nesse caso, não importa oq eu tÕ mandando só o tipo da msg 
-                                                        # mas isso só pq o gerador não trata oq ele receber na tipo_funcao()
+        msg.body = "Qual o tipo da função?"             
         await self.send(msg)
         print("... pergunta enviada")
 
@@ -94,7 +81,6 @@ class ask_tipofuncao(State):
             else:
                 print("Timeout -> ask_tipofuncao")
 
-        # selecionando qual subcompotamento (state) será selecionado
         if(resp.body == "1grau"):
             print("Resolvendo para função de 1 grau")
             self.set_next_state(TESTE_EXTREMIDADEINF_STATE)

@@ -6,33 +6,24 @@ import random
 import time
 
 class Gerador(Agent):
-    #definindo o grau da função criada pelo Gerador
+
     grau = random.randint(1,3)
-    grau = 2
     coefs = {}
-    # gerando as funções
-    # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
+
     if (grau == 1):
         x = random.randint(-1000,1000)
-        # x=1000
+
         a=0
         while a == 0:
             a = random.randint(-100,100)
         y = -1 * (a*x)
         print(f"Funcao de 1o grau. Raiz: x={x}")
         print(f"Funcao: {a}x + ({y})")
-    # fiz essa parte do segundo grau cagada só pra dar ideia do q fazer, fique a vontade pra melhorar
-    # lembrar de conferir se as funções tem raíz (ela precisa ter algum x que o y dê 0)
+
     if (grau == 2):
         x1 = random.randint(-1000, 1000)
         x2 = random.randint(-1000, 1000)
 
-        # dá merda quando tem 2 raizes negativas
-
-        x1 = -174
-        x2 = -452
-        #x1 = 435
-        #x2 = 174
         c = 0
         while c == 0:
          c = random.randint(-100, 100)
@@ -145,9 +136,6 @@ class Gerador(Agent):
         self.add_behaviour(ft, template)
 
 gerador = Gerador("andre@jix.im", "RelouSI")
-#essa parte aí do host pode ficar comentada, n serve pra nada nesse código
-#e tenho medo de dar xabu se descomentar
-#gerador.web.start(hostname="127.0.0.1", port="10000")
 future = gerador.start()
 future.result()
 
