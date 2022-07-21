@@ -56,7 +56,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-model.fit(entrada, saida, epochs=500, batch_size=10, verbose=0)
+model.fit(entrada, saida, epochs=100, batch_size=10, verbose=0)
 
 # make predictions for the input data
 yhat = model.predict(entrada)
