@@ -60,7 +60,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-history = model.fit(entrada, saida, validation_split=0.15, epochs=3000, batch_size=10, verbose=0)
+history = model.fit(entrada, saida, validation_split=0.15, epochs=2000, batch_size=10, verbose=0)
 
 # make predictions for the input data   
 ypredict = model.predict(entrada)
@@ -83,9 +83,7 @@ axs[0].set(xlabel='Input Variable (x)', ylabel='Output Variable (y)')
 axs[0].legend()
 axs[0].label_outer()
 
-
-
-# pyplot.plot(history.history['loss'])
+#plot loss
 axs[1].plot(history.history['val_loss'], color = 'tab:orange')
 axs[1].set_title('model loss')
 axs[1].set(xlabel='epoch', ylabel='loss')
@@ -95,7 +93,7 @@ axs[1].label_outer()
 
 
 pyplot.savefig('plot.png')
-# pyplot.show()
+pyplot.show()
 
 terminalinput = "0"
 
@@ -112,5 +110,23 @@ while(terminalinput != ""):
         print("y real->", end = ''); print(y_plot[terminalinput])
         print("y est ->", end = ''); print(ypredict_plot[terminalinput])
 
+        x=9
+        if(terminalinput<9):
+                x=terminalinput
 
-        
+        x_partial = x_plot[terminalinput-x:terminalinput+10]
+        y_partial = y_plot[terminalinput-x:terminalinput+10]
+        ypredict_partial = ypredict_plot[terminalinput-x:terminalinput+10]
+
+        pyplot.plot(x_partial,y_partial, label='Actual', color = 'b')
+        pyplot.plot(x_partial,ypredict_partial, label='Predicted', color = 'tab:orange')
+
+        pyplot.plot(terminalinput,y_plot[terminalinput], 'ro')
+        pyplot.plot(terminalinput,ypredict_plot[terminalinput], 'ro')
+
+        pyplot.title('Partial Input (x) versus Output (y)')
+        pyplot.xlabel('Input Variable (x)')
+        pyplot.ylabel('Output Variable (y)')
+        pyplot.legend()
+
+        pyplot.show()
