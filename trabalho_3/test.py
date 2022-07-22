@@ -4,6 +4,7 @@
 #history
 #https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
 
+from __future__ import print_function
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
@@ -59,38 +60,57 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-history = model.fit(entrada, saida, validation_split=0.15, epochs=2000, batch_size=10, verbose=0)
+history = model.fit(entrada, saida, validation_split=0.15, epochs=3000, batch_size=10, verbose=0)
 
 # make predictions for the input data   
-yhat = model.predict(entrada)
+ypredict = model.predict(entrada)
 
 x_plot = scale_x.inverse_transform(entrada)
 y_plot = scale_y.inverse_transform(saida)
-yhat_plot = scale_y.inverse_transform(yhat)
+ypredict_plot = scale_y.inverse_transform(ypredict)
 
 # report model error
-print('MSE: %.3f' % mean_squared_error(saida, yhat))
+print('MSE: %.3f' % mean_squared_error(saida, ypredict))
 
-# plot x vs y
-pyplot.subplot(1, 2, 1)
-pyplot.plot(entrada,saida, label='Actual', color = 'b')
-# plot x vs yhat
-pyplot.plot(entrada,yhat, label='Predicted', color = 'tab:orange')
-pyplot.title('Input (x) versus Output (y)')
-pyplot.xlabel('Input Variable (x)')
-pyplot.ylabel('Output Variable (y)')
-pyplot.legend()
+fig, axs = pyplot.subplots(1, 2)
+
+# plot x vs real y
+axs[0].plot(x_plot,y_plot, label='Actual', color = 'b')
+# plot x vs ypredict
+axs[0].plot(x_plot,ypredict_plot, label='Predicted', color = 'tab:orange')
+axs[0].set_title('Input (x) versus Output (y)')
+axs[0].set(xlabel='Input Variable (x)', ylabel='Output Variable (y)')
+axs[0].legend()
+axs[0].label_outer()
+
+
+
+# pyplot.plot(history.history['loss'])
+axs[1].plot(history.history['val_loss'], color = 'tab:orange')
+axs[1].set_title('model loss')
+axs[1].set(xlabel='epoch', ylabel='loss')
+axs[1].yaxis.set_label_position("right")
+axs[1].yaxis.tick_right()
+axs[1].label_outer()
+
+
+pyplot.savefig('plot.png')
 # pyplot.show()
 
-# list all data in history
-print(history.history.keys())
-# summarize history for loss
-pyplot.subplot(1, 2, 2)
-# pyplot.plot(history.history['loss'])
-pyplot.plot(history.history['val_loss'], color = 'tab:orange')
-pyplot.title('model loss')
-pyplot.ylabel('loss')
-pyplot.xlabel('epoch')
-# pyplot.legend(['train', 'test'], loc='upper left')
-pyplot.show()
+terminalinput = "0"
 
+while(terminalinput != ""):
+        terminalinput = input("Digite valor dentro do intervalo ou Enter para sair: ") 
+        if(terminalinput == ""):
+                break
+        terminalinput = int(terminalinput)
+        if(terminalinput % 1 != 0 or terminalinput<0 or terminalinput>60):
+                print("número inválido")
+                break
+
+        print("número: " + str(terminalinput))
+        print("y real->", end = ''); print(y_plot[terminalinput])
+        print("y est ->", end = ''); print(ypredict_plot[terminalinput])
+
+
+        
