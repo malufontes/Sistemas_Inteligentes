@@ -1,6 +1,9 @@
 #https://machinelearningmastery.com/neural-networks-are-function-approximators/#:~:text=a%20Simple%20Function-,What%20Is%20Function%20Approximation,learn%20to%20approximate%20a%20function.
 #https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
 
+#history
+#https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
+
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
@@ -56,7 +59,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-model.fit(entrada, saida, epochs=100, batch_size=10, verbose=0)
+model.fit(entrada, saida, epochs=1000, batch_size=10, verbose=1)
 
 # make predictions for the input data
 yhat = model.predict(entrada)
@@ -68,9 +71,9 @@ yhat_plot = scale_y.inverse_transform(yhat)
 # report model error
 print('MSE: %.3f' % mean_squared_error(saida, yhat))
 # plot x vs y
-pyplot.scatter(entrada,saida, label='Actual')
+pyplot.plot(entrada,saida, label='Actual')
 # plot x vs yhat
-pyplot.scatter(entrada,yhat, label='Predicted')
+pyplot.plot(entrada,yhat, label='Predicted')
 pyplot.title('Input (x) versus Output (y)')
 pyplot.xlabel('Input Variable (x)')
 pyplot.ylabel('Output Variable (y)')
