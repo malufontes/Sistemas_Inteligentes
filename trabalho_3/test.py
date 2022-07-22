@@ -56,10 +56,10 @@ model.add(Dense(10, activation='relu', kernel_initializer='he_uniform'))
 model.add(Dense(1))
 
 # define the loss function and optimization algorithm
-model.compile(loss='mse', optimizer='adam')
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
 
 # ft the model on the training dataset
-model.fit(entrada, saida, epochs=1000, batch_size=10, verbose=1)
+history = model.fit(entrada, saida, validation_split=0.15, epochs=3000, batch_size=10, verbose=1)
 
 # make predictions for the input data
 yhat = model.predict(entrada)
@@ -80,4 +80,22 @@ pyplot.ylabel('Output Variable (y)')
 pyplot.legend()
 pyplot.show()
 
+# list all data in history
+print(history.history.keys())
+# summarize history for loss
+pyplot.plot(history.history['loss'])
+pyplot.plot(history.history['val_loss'])
+pyplot.title('model loss')
+pyplot.ylabel('loss')
+pyplot.xlabel('epoch')
+pyplot.legend(['train', 'test'], loc='upper left')
+pyplot.show()
 
+# summarize history for accuracy
+pyplot.plot(history.history['accuracy'])
+pyplot.plot(history.history['val_accuracy'])
+pyplot.title('model accuracy')
+pyplot.ylabel('accuracy')
+pyplot.xlabel('epoch')
+pyplot.legend(['train', 'test'], loc='upper left')
+pyplot.show()
