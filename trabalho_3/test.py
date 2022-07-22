@@ -26,19 +26,19 @@ saida = []
 for row in csvreader:
         entrada.append(row[0])
         saida.append(row[1])
-print(type(entrada))
+# print(type(entrada))
 # print(entrada)
 
 # transformando as lista em numpy.ndarrays pra manipulação ficar mais fácil
 entrada = asarray(entrada)
 saida = asarray(saida)
-print(type(entrada))
+# print(type(entrada))
 # print(entrada)
 # print(saida)
 
 entrada = entrada.reshape((len(entrada), 1))
 saida = saida.reshape((len(saida), 1))
-print(type(entrada))
+# print(type(entrada))
 
 
 # separately scale the input and output variables
@@ -46,7 +46,7 @@ scale_x = MinMaxScaler()
 entrada = scale_x.fit_transform(entrada)
 scale_y = MinMaxScaler()
 saida = scale_y.fit_transform(saida)
-print(entrada.min(), entrada.max(), saida.min(), saida.max())
+# print(entrada.min(), entrada.max(), saida.min(), saida.max())
 
 
 # design the neural network model
@@ -56,12 +56,12 @@ model.add(Dense(10, activation='relu', kernel_initializer='he_uniform'))
 model.add(Dense(1))
 
 # define the loss function and optimization algorithm
-model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-history = model.fit(entrada, saida, validation_split=0.15, epochs=3000, batch_size=10, verbose=1)
+history = model.fit(entrada, saida, validation_split=0.15, epochs=2000, batch_size=10, verbose=0)
 
-# make predictions for the input data
+# make predictions for the input data   
 yhat = model.predict(entrada)
 
 x_plot = scale_x.inverse_transform(entrada)
@@ -70,32 +70,27 @@ yhat_plot = scale_y.inverse_transform(yhat)
 
 # report model error
 print('MSE: %.3f' % mean_squared_error(saida, yhat))
+
 # plot x vs y
-pyplot.plot(entrada,saida, label='Actual')
+pyplot.subplot(1, 2, 1)
+pyplot.plot(entrada,saida, label='Actual', color = 'b')
 # plot x vs yhat
-pyplot.plot(entrada,yhat, label='Predicted')
+pyplot.plot(entrada,yhat, label='Predicted', color = 'tab:orange')
 pyplot.title('Input (x) versus Output (y)')
 pyplot.xlabel('Input Variable (x)')
 pyplot.ylabel('Output Variable (y)')
 pyplot.legend()
-pyplot.show()
+# pyplot.show()
 
 # list all data in history
 print(history.history.keys())
 # summarize history for loss
-pyplot.plot(history.history['loss'])
-pyplot.plot(history.history['val_loss'])
+pyplot.subplot(1, 2, 2)
+# pyplot.plot(history.history['loss'])
+pyplot.plot(history.history['val_loss'], color = 'tab:orange')
 pyplot.title('model loss')
 pyplot.ylabel('loss')
 pyplot.xlabel('epoch')
-pyplot.legend(['train', 'test'], loc='upper left')
+# pyplot.legend(['train', 'test'], loc='upper left')
 pyplot.show()
 
-# summarize history for accuracy
-pyplot.plot(history.history['accuracy'])
-pyplot.plot(history.history['val_accuracy'])
-pyplot.title('model accuracy')
-pyplot.ylabel('accuracy')
-pyplot.xlabel('epoch')
-pyplot.legend(['train', 'test'], loc='upper left')
-pyplot.show()
