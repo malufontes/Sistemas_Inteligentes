@@ -60,9 +60,10 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # ft the model on the training dataset
-history = model.fit(entrada, saida, validation_split=0.15, epochs=2000, batch_size=10, verbose=0)
+history = model.fit(entrada, saida, validation_split=0.15, epochs=3000, batch_size=10, verbose=0)
 
 # make predictions for the input data   
+
 ypredict = model.predict(entrada)
 
 x_plot = scale_x.inverse_transform(entrada)
