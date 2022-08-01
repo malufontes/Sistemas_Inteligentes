@@ -1,9 +1,3 @@
-#https://machinelearningmastery.com/neural-networks-are-function-approximators/#:~:text=a%20Simple%20Function-,What%20Is%20Function%20Approximation,learn%20to%20approximate%20a%20function.
-#https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
-
-#history
-#https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
-
 from __future__ import print_function
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
@@ -11,6 +5,8 @@ from keras.models import Sequential
 from keras.layers import Dense
 from numpy import asarray
 from matplotlib import pyplot
+from keras.models import Sequential, model_from_json
+
 
 # fazendo a leitura dos dados fornecidos
 import csv
@@ -49,35 +45,32 @@ scale_y = MinMaxScaler()
 saida = scale_y.fit_transform(saida)
 # print(entrada.min(), entrada.max(), saida.min(), saida.max())
 
+#------------------------------------------
+# load json and create model
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+# load weights into new model
+loaded_model.load_weights("model.h5")
+print("Loaded model from disk")
+ 
+# evaluate loaded model on test data
+loaded_model.compile(loss='mse', optimizer='adam')
+#-------------------------------------------
 
-# design the neural network model
-model = Sequential()
-model.add(Dense(10, input_dim=1, activation='relu', kernel_initializer='he_uniform'))
-model.add(Dense(10, activation='relu', kernel_initializer='he_uniform'))
-model.add(Dense(1))
-                                   
-# define the loss function and optimization algorithm
-model.compile(loss='mse', optimizer='adam')
 
-# ft the model on the training dataset
-history = model.fit(entrada, saida, validation_split=0.15, epochs=2500, batch_size=10, verbose=0)
 
-# make predictions for the input data   
-ypredict = model.predict(entrada)
+
+ypredict = loaded_model.predict(entrada)
 
 x_plot = scale_x.inverse_transform(entrada)
 y_plot = scale_y.inverse_transform(saida)
 ypredict_plot = scale_y.inverse_transform(ypredict)
 
-##------------------------------------
-# serialize model to JSON
-model_json = model.to_json()                                        
-with open("model.json", "w") as json_file:
-    json_file.write(model_json)
-# serialize weights to HDF5
-model.save_weights("model.h5")
-print("Saved model to disk")
-##------------------------------------ 
+#score = loaded_model.evaluate(scale_x, scale_y, verbose=0)
+#print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
+
 
 # report model error
 print('MSE: %.3f' % mean_squared_error(saida, ypredict))
@@ -89,17 +82,10 @@ axs[0].plot(x_plot,y_plot, label='Actual', color = 'b')
 # plot x vs ypredict
 axs[0].plot(x_plot,ypredict_plot, label='Predicted', color = 'tab:orange')
 axs[0].set_title('Input (x) versus Output (y)')
-axs[0].set(xlabel='Input Variable (x)', ylabel='Output Variable (y)')
+#axs[0].set(xlabel='Input Variable (x)', ylabel='Output Variable (y)')
 axs[0].legend()
 axs[0].label_outer()
 
-#plot loss
-axs[1].plot(history.history['val_loss'], color = 'tab:orange')
-axs[1].set_title('model loss')
-axs[1].set(xlabel='epoch', ylabel='loss')
-axs[1].yaxis.set_label_position("right")
-axs[1].yaxis.tick_right()
-axs[1].label_outer()
 
 
 pyplot.savefig('plot.png')
